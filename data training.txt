@@ -1,0 +1,161 @@
+Training Set
+612
+Validation Set
+195
+Testing Set
+94
+
+
+Resize: Fit within 416x416
+
+!python train.py --img 416 --batch 16 --epochs 100 --data {dataset.location}/data.yaml --weights yolov5s.pt --cache
+Model Summary: 213 layers, 7029004 parameters, 0 gradients
+               Class     Images     Labels          P          R     	mAP@.5 		mAP@.5:.95: 100% 7/7 [00:06<00:00,  1.08it/s]
+                 all        195       2687      0.899      0.679/0.8146 0.729/0.874     0.455
+              angkot        195        127      0.894      0.819      	0.923       	0.77
+                 bus        195          5          1          0    	0.00502    	0.00371
+               mobil        195        761      0.856      0.803      	0.877      	0.614
+               motor        195       1442      0.861      0.814      	0.869       	0.44
+              palang        195        195      0.993      0.995      	0.991      	0.489
+                truk        195        157      0.789      0.642       	0.71      	0.416
+
+!python train.py --img 416 --batch 16 --epochs 50 --data {dataset.location}/data.yaml --cfg ./models/custom_yolov5s.yaml --weights '' --name yolov5s_results_416_16_50  --cache
+
+ 		Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:08<00:00,  1.16s/it]
+                 all        195       2687      0.771      0.585      0.627      0.311
+              angkot        195        127      0.797      0.701      0.814      0.594
+                 bus        195          5          1          0     0.0254     0.0209
+               mobil        195        761      0.716      0.792       0.81      0.445
+               motor        195       1442      0.714      0.798      0.818      0.357
+              palang        195        195      0.697      0.944      0.891      0.288
+                truk        195        157        0.7      0.274      0.403      0.161
+
+
+!python train.py --img 416 --batch 16 --epochs 150 --data {dataset.location}/data.yaml --cfg ./models/custom_yolov5s.yaml --weights '' --name yolov5s_results_416_16_150  --cache
+
+ 		Class     Images     Labels          P          R     	mAP@.5 		mAP@.5:.95: 100% 7/7 [00:07<00:00,  1.05s/it]
+                 all        195       2687      0.855      0.673/0.808  0.713/0.85    	0.409
+              angkot        195        127      0.889      0.835      	0.898      	0.684
+                 bus        195          5          1          0     	0.0278     	0.0168
+               mobil        195        761      0.792      0.842      	0.869      	0.533
+               motor        195       1442        0.8      0.818      	0.857     	 0.409
+              palang        195        195      0.993       0.99      	0.989      	0.482
+                truk        195        157      0.659      0.553      	0.637      	0.327
+
+!python train.py --img 416 --batch 16 --epochs 100 --data {dataset.location}/data.yaml --cfg ./models/custom_yolov5s.yaml --weights '' --name yolov5s_results2_416_16_100  --cache
+
+		Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:06<00:00,  1.06it/s]
+                 all        201       2772      0.822      0.585      0.664      0.364
+              angkot        201        129      0.828      0.791      0.879      0.656
+                 bus        201          5          1          0        0.2      0.159
+               mobil        201        802      0.788      0.678       0.75      0.452
+               motor        201       1478      0.828      0.684      0.779      0.357
+              palang        201        201      0.883      0.975      0.952      0.355
+                truk        201        157      0.606      0.382      0.422      0.209
+
+
+!python train.py --img 416 --batch 16 --epochs 100 --data {dataset.location}/data.yaml --weights yolov5m.pt --name yolov5s_results3_416_16_100 --cache
+
+		Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:08<00:00,  1.23s/it]
+                 all        197       2720      0.871      0.705      0.728      0.476
+              angkot        197        129      0.857      0.853      0.914      0.757
+                 bus        197          5          1          0     0.0125    0.00895
+               mobil        197        775      0.853      0.823       0.87      0.625
+               motor        197       1457      0.805      0.841      0.856       0.45
+              palang        197        197      0.995      0.991      0.993      0.559
+                truk        197        157      0.719       0.72      0.722      0.457
+
+
+
+
+==============================================================================================================
+--img 416 --batch 16 --epochs 100
+Validating runs/train/yolov5s_416_16_100/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:07<00:00,  1.00s/it]
+                 all        212       2480      0.755       0.74      0.762      0.433
+              angkot        212        110      0.864      0.745      0.867      0.624
+               mobil        212        737      0.749      0.819      0.799      0.489
+               motor        212       1295      0.724      0.785      0.795      0.379
+              palang        212        213      0.966      0.981      0.988       0.51
+                truk        212        125      0.474      0.368      0.359      0.162
+
+--img 416 --batch 16 --epochs 150
+Validating runs/train/yolov5s_416_16_150/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:04<00:00,  1.44it/s]
+                 all        212       2480      0.788      0.756      0.786      0.441
+              angkot        212        110      0.858      0.827      0.876      0.671
+               mobil        212        737      0.807      0.782      0.837      0.514
+               motor        212       1295      0.786       0.78      0.812      0.388
+              palang        212        213      0.954      0.977      0.993      0.421
+                truk        212        125      0.536      0.416      0.413      0.209
+
+
+--img 416 --batch 16 --epochs 50
+Validating runs/train/yolov5s_416_16_502/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:07<00:00,  1.02s/it]
+                 all        212       2480      0.621      0.674      0.656      0.334
+              angkot        212        110       0.76      0.636      0.776       0.56
+               mobil        212        737      0.689      0.821      0.799      0.437
+               motor        212       1295       0.68      0.788      0.782      0.341
+              palang        212        213      0.625        0.9      0.635      0.207
+                truk        212        125      0.353      0.222      0.288      0.127
+
+--img 640 --batch 16 --epochs 50
+Validating runs/train/yolov5s_640_16_502/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:08<00:00,  1.27s/it]
+                 all        212       2480      0.717      0.709       0.74      0.381
+              angkot        212        110      0.843      0.636      0.801      0.584
+               mobil        212        737      0.711      0.873      0.835      0.506
+               motor        212       1295      0.714      0.841      0.843      0.404
+              palang        212        213      0.891      0.897      0.909      0.257
+                truk        212        125      0.428      0.296       0.31      0.153
+
+
+
+--img 640 --batch 16 --epochs 100
+Validating runs/train/yolov5s_640_16_1002/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:09<00:00,  1.34s/it]
+                 all        212       2480      0.818      0.719      0.777      0.436
+              angkot        212        110      0.835      0.691      0.798      0.614
+               mobil        212        737      0.807      0.753       0.83      0.539
+               motor        212       1295       0.82      0.834      0.862      0.435
+              palang        212        213      0.977      0.939      0.968      0.373
+                truk        212        125      0.654      0.376      0.429       0.22
+
+--img 640 --batch 16 --epochs 150 
+Validating runs/train/yolov5s_640_16_150/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients, 16.8 GFLOPs
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 7/7 [00:11<00:00,  1.69s/it]
+                 all        212       2480      0.802      0.759      0.794      0.473
+              angkot        212        110      0.883      0.755       0.85      0.652
+               mobil        212        737      0.813      0.787      0.854      0.568
+               motor        212       1295      0.805      0.832      0.849      0.436
+              palang        212        213      0.988      0.962      0.985      0.475
+                truk        212        125      0.521      0.461      0.435      0.234
+
+
+--img 640 --batch 16 --epochs 50 (augmentation)
+Validating runs/train/yolov5s_aug_640_16_50/weights/best.pt...
+Fusing layers... 
+Model Summary: 232 layers, 7260003 parameters, 0 gradients, 16.8 GFLOPs
+               Class     Images     Labels          P          R     mAP@.5 mAP@.5:.95: 100% 10/10 [00:11<00:00,  1.12s/it]
+                 all        301       3007      0.743      0.598       0.63       0.36
+              angkot        301        172      0.913      0.692      0.813      0.619
+               mobil        301        969      0.592      0.801      0.733      0.459
+               motor        301       1296      0.676      0.778      0.743      0.342
+              palang        301        256      0.963      0.426      0.497      0.228
+                truk        301        314      0.571      0.296      0.366      0.152
+
+
+

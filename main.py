@@ -6,7 +6,7 @@ from yolov5.utils.downloads import attempt_download
 from yolov5.utils.datasets import LoadImages, LoadStreams
 from yolov5.utils.general import (
 		check_img_size, non_max_suppression, scale_coords, xyxy2xywh)
-from yolov5.utils.torch_utils import select_device, time_synchronized
+from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.datasets import letterbox
 
 from utils_ds.parser import get_config
@@ -88,7 +88,7 @@ class VideoTracker(object):
 				self.pts = [deque(maxlen=40) for _ in range(9999)]
 				self.counter = []
 				self.selection_dict = {'img': None, 'points selected': []}
-				self.model_image_size = (750, 750)
+				self.model_image_size = (720, 720)
 				self.ct = CentroidTracker()
 				self.trackableObjects = {}
 				
@@ -99,8 +99,11 @@ class VideoTracker(object):
 				self.totalDownMotor = 0
 				self.totalUpTruck = 0
 				self.totalDownTruck = 0
-				self.totalUpBus = 0
-				self.totalDownBus = 0
+				self.totalUpAngkot = 0
+				self.totalDownAngkot = 0
+
+				self.URL_API_lalulintas = 'http://localhost:4000/lalulintas'
+				self.URL_API_Pelanggaran = 'http://localhost:4000/pelanggaran'
 
 		def __enter__(self):
 				# ************************* Load video from camera *************************
@@ -237,7 +240,7 @@ class VideoTracker(object):
 				s = '%gx%g ' % img.shape[2:]    # print string
 				# ***************************** Detection time *********************************************************
 				# Inference
-				t1 = time_synchronized()
+				t1 = time_sync()
 				#pred = self.models(img, augment=self.args.augment)[0]
 				pred = self.detector(img, augment=self.args.augment)[0]  # list: bz * [ (#obj, 6)]
 				# Apply NMS and filter object other than person (cls:0)
@@ -245,7 +248,7 @@ class VideoTracker(object):
 																	 classes=self.args.classes, agnostic=self.args.agnostic_nms) 
 				
 
-				t2 = time_synchronized()
+				t2 = time_sync()
 
 				# ***************************** get all obj ************************************************************
 				det = pred[0]  # for video, bz is 1
@@ -346,12 +349,13 @@ class VideoTracker(object):
 					cv2.line(img, (0, int(height / 2.5)), (int(width), int(height / 2.5)), (0, 0, 255), thickness=1)
 
 					nameclass = self.names[idclss]
-					if(nameclass == 'barrier' and y < height / 2.5 ):
+					#print(nameclass)
+					if(nameclass == 'palang' and y < height / 2.5 ):
 						#cv2.circle(img,(x1,y1), 5, (0, 0, 255), -1)
 						stat_palang = 'palang pintu terbuka'
 						#print(stat)
 						colour_barrier = (36,255,12)
-					elif(nameclass == 'barrier' and y > height / 2.5 ):
+					elif(nameclass == 'palang' and y > height / 2.5 ):
 						stat_palang = 'palang pintu tertutup'
 						#print(stat)
 						colour_barrier = (0,0,255)
@@ -385,14 +389,14 @@ class VideoTracker(object):
 					
 					
 				text_scale = max(1, img.shape[1] // 1600) 
-				cv2.putText(img, 'Down Mobil  : ' + str(self.totalDownCar), (600, 20 + text_scale),cv2.FONT_HERSHEY_DUPLEX , 0.4, (36,255,12), 1)
-				cv2.putText(img, 'Up Mobil : ' + str(self.totalUpCar), (600, 40 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1) 
-				cv2.putText(img, 'Down Motor  : ' + str(self.totalDownMotor), (600, 60 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
-				cv2.putText(img, 'Up Motor : ' + str(self.totalUpMotor), (600, 80 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)  
-				cv2.putText(img, 'Down Truck  : ' + str(self.totalDownTruck), (600, 100 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
-				cv2.putText(img, 'Up Truck : ' + str(self.totalUpTruck), (600, 120 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)  
-				cv2.putText(img, 'Down Bus  : ' + str(self.totalDownBus), (600, 140 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
-				cv2.putText(img, 'Up Bus : ' + str(self.totalUpBus), (600, 160 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)    
+				#cv2.putText(img, 'Down Mobil  : ' + str(self.totalDownCar), (600, 20 + text_scale),cv2.FONT_HERSHEY_DUPLEX , 0.4, (36,255,12), 1)
+				#cv2.putText(img, 'Up Mobil : ' + str(self.totalUpCar), (600, 40 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1) 
+				#cv2.putText(img, 'Down Motor  : ' + str(self.totalDownMotor), (600, 60 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
+				#cv2.putText(img, 'Up Motor : ' + str(self.totalUpMotor), (600, 80 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)  
+				#cv2.putText(img, 'Down Truck  : ' + str(self.totalDownTruck), (600, 100 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
+				#cv2.putText(img, 'Up Truck : ' + str(self.totalUpTruck), (600, 120 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)  
+				#cv2.putText(img, 'Down Angkot  : ' + str(self.totalDownAngkot), (600, 140 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)
+				#cv2.putText(img, 'Up Angkot : ' + str(self.totalUpAngkot), (600, 160 + text_scale),cv2.FONT_HERSHEY_DUPLEX, 0.4, (36,255,12), 1)    
 
 				#cv2.line(img, (0, int(height/1.8)), (int(width), int(height/1.8)), (0, 0, 255), thickness=1)
 				#cv2.line(img0, (0, int(3*height/6-height/20)), (width, int(3*height/6-height/20)), (0, 255, 0), thickness=2)
@@ -443,17 +447,17 @@ class VideoTracker(object):
 								if direction < 0 and cv2.pointPolygonTest(self.selection_dict['points selected'], center_, measureDist=False) >=0 : 
 								#and centroid[1] > 357: ##up truble when at distant car counted twice because bbox reappear
 									#idx = detCentroid.tolist().index(centroid.tolist())
-									if(nameclass == 'car'):
+									if(nameclass == 'mobil'):
 										self.totalUpCar += 1
 										to.counted = True
-									elif(nameclass == 'motorbike'):
+									elif(nameclass == 'motor'):
 										self.totalUpMotor += 1
 										to.counted = True
-									elif(nameclass == 'truck'):
+									elif(nameclass == 'truk'):
 										self.totalUpTruck += 1
 										to.counted = True
-									elif(nameclass == 'Bus'):
-										self.totalUpBus += 1
+									elif(nameclass == 'angkot'):
+										self.totalUpAngkot += 1
 										to.counted = True
 
 
@@ -471,7 +475,7 @@ class VideoTracker(object):
 
 									try:
 										headers =  {"Content-Type":"application/json"}
-										requests.post(url='http://localhost:4000/data_traffic', json=send_json, headers=headers)
+										requests.post(url=self.URL_API_lalulintas, json=send_json, headers=headers)
 									except (requests.exceptions.RequestException, requests.exceptions.ConnectionError,
 										requests.exceptions.URLRequired) as e:
 										print(e)
@@ -480,17 +484,17 @@ class VideoTracker(object):
 								#elif direction > 0 and centroid[1] > height / 1.8:  #arah down
 								elif direction > 0 and cv2.pointPolygonTest(self.selection_dict['points selected'], center_, measureDist=False) >=0 : 
 									#idx = detCentroid.tolist().index(centroid.tolist())
-									if(nameclass == 'car'):
+									if(nameclass == 'mobil'):
 										self.totalDownCar += 1
 										to.counted = True
-									elif(nameclass == 'motorbike'):
+									elif(nameclass == 'motor'):
 										self.totalDownMotor += 1
 										to.counted = True
-									elif(nameclass == 'truck'):
+									elif(nameclass == 'truk'):
 										self.totalDownTruck += 1
 										to.counted = True
-									elif(nameclass == 'Bus'):
-										self.totalDowBus += 1
+									elif(nameclass == 'angkot'):
+										self.totalDownAngkot += 1
 										to.counted = True
 
 									send_json = {
@@ -505,7 +509,7 @@ class VideoTracker(object):
 									print(send_json)
 									try:
 										headers =  {"Content-Type":"application/json"}
-										requests.post(url='http://localhost:4000/data_traffic', json=send_json, headers=headers)
+										requests.post(url=self.URL_API_lalulintas, json=send_json, headers=headers)
 									except (requests.exceptions.RequestException, requests.exceptions.ConnectionError,
 										requests.exceptions.URLRequired) as e:
 										print(e)
@@ -535,13 +539,13 @@ class VideoTracker(object):
 									#idx = detCentroid.tolist().index(centroid.tolist())
 									crop_img = img[y1:y2+5, x1:x2+5]
 									p = os.path.sep.join([dir_output, time.strftime("%Y%m%d")+"{}.png".format(str(id).zfill(5))])
-									print(p)
+									#print(p)
 									cv2.imwrite(p, crop_img)
 									to.counted = True
 
 									json_pelanggaran = {
 										"lokasi":'perlintasan sebidang andir',
-										"jenis_pelanggaran":'menerobos palang perlintasan sebidang',
+										"jenis_pelanggaran":'menerobos palang perlintasan',
 										"objek_pelanggaran":nameclass,
 										"level_conf":conf,
 										"tanggal":time.strftime("%Y-%m-%d"),
@@ -554,7 +558,7 @@ class VideoTracker(object):
 									print(json_pelanggaran)
 									try:
 										headers =  {"Content-Type":"application/json"}
-										requests.post(url='http://localhost:4000/data_pelanggaran', json=json_pelanggaran, headers=headers)
+										requests.post(url=self.URL_API_Pelanggaran, json=json_pelanggaran, headers=headers)
 									except (requests.exceptions.RequestException, requests.exceptions.ConnectionError,
 										requests.exceptions.URLRequired) as e:
 										print(e)
@@ -563,13 +567,13 @@ class VideoTracker(object):
 
 									crop_img = img[y1:y2+5, x1:x2+5]
 									p = os.path.sep.join([dir_output, time.strftime("%Y%m%d")+"{}.png".format(str(id).zfill(5))])
-									print(p)
+									#print(p)
 									cv2.imwrite(p, crop_img)
 									to.counted = True
 
 									json_pelanggaran = {
 										"lokasi":'perlintasan sebidang andir',
-										"jenis_pelanggaran":'menerobos palang perlintasan sebidang',
+										"jenis_pelanggaran":'menerobos palang perlintasan',
 										"objek_pelanggaran":nameclass,
 										"level_conf":conf,
 										"tanggal":time.strftime("%Y-%m-%d"),
@@ -582,7 +586,7 @@ class VideoTracker(object):
 									print(json_pelanggaran)
 									try:
 										headers =  {"Content-Type":"application/json"}
-										requests.post(url='http://localhost:4000/data_pelanggaran', json=json_pelanggaran, headers=headers)
+										requests.post(url=self.URL_API_Pelanggaran, json=json_pelanggaran, headers=headers)
 									except (requests.exceptions.RequestException, requests.exceptions.ConnectionError,
 										requests.exceptions.URLRequired) as e:
 										print(e)
